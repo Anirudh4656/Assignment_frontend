@@ -2,6 +2,7 @@ import React,  { useEffect, useState } from "react";
 import { Button, Typography, Box, Card, CardContent, CardActions } from '@mui/material';
 import { useGetPlansQuery } from "../Services/adminapi";
 import { useSelectedPlansMutation} from "../Services/file"
+import { Navigate, useNavigate } from "react-router-dom";
 interface NewPlan {
     name:string,
     price:number,
@@ -16,11 +17,20 @@ const Plans:React.FC=()=>{
     const [selectedPlan]= useSelectedPlansMutation();
     const [plans, setPlans] = useState<NewPlan[]>([]);
     const [selected, setSelected] = useState<string | null>(null);
+    const navigate = useNavigate();
     const handleSelectPlan = async(planId: string) => {
         setSelected(planId);
-        const result =await selectedPlan({planId});
-        console.log("in selected Plan",result);
-
+       
+        //try
+        try{
+          const result =await selectedPlan({planId});
+          console.log("in selected Plan",result);
+            navigate("/upload");
+        
+        }catch(e){
+          console.log(e);
+        }
+       
       };
 
 

@@ -8,9 +8,9 @@ const Home:React.FC = () => {
     <>
     <NavBar/>
     <Container maxWidth="xl">
-    <Grid container  spacing={3}>
+   
           <FileList />
-     </Grid>
+    
     </Container>
   
     </>

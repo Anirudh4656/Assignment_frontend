@@ -4,6 +4,7 @@ export interface File {
   filename: string;
   filepath: string;
   isPublic: boolean;
+  data:any;
 }
 
 interface FilesState {
@@ -26,6 +27,16 @@ export const fileApi=createApi({
         }
          })
           }),
+          privateFiles:builder.mutation<FilesState,{accessKey:string,id:string}>({
+            query:({accessKey,id})=>({
+             url:'/users/keys',
+             body:{accessKey,id},
+             method:'POST',
+             headers: {
+               'Authorization': `Bearer ${token}`
+           }
+            })
+             }),
           selectedPlans:builder.mutation<FilesState,{planId:string}>({
             query:({planId})=>({
              url:`/users/plans/${planId}`,
@@ -55,7 +66,8 @@ export const fileApi=createApi({
 export const {
     useFilesQuery,
     useUploadFileMutation,
-    useSelectedPlansMutation
+    useSelectedPlansMutation,
+    usePrivateFilesMutation
 }=fileApi;
 // async onQueryStarted(arg, { dispatch, getState }) {
 //     await refreshTokenIfNeeded(dispatch, getState);

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Checkbox, FormControlLabel, Typography, Box, TextField, List, ListItem, ListItemText } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Typography, Box, TextField, List, ListItem, ListItemText, Snackbar, Alert } from '@mui/material';
 import { RootState, AppDispatch } from '../../Store/store';
 import { uploadFiles, fetchFiles } from '../../Store/reducers/filereducer'
 import { useUploadFileMutation }from "../../Services/file"
-interface FormData{
+interface FormData {
     append: any;
     user:string;
     filename: string;
@@ -17,6 +17,8 @@ const FileUpload: React.FC = () => {
   const [user, setUser] = useState('userId'); // Replace with actual user ID or fetch from state/context
   const [filename, setFilename] = useState('');
   const [filepath, setFilepath] = useState('');
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const dispatch: AppDispatch = useDispatch();
   const [uploadFile] = useUploadFileMutation();
 //   const { error } = useSelector((state: RootState) => state.files);
@@ -31,27 +33,43 @@ const FileUpload: React.FC = () => {
 //     }
 //   }, [user]);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     if (e.target.files) {
-        const selectedFile = e.target.files[0];
-        setFile(selectedFile);
-        setFilename(selectedFile.name);
-        setFilepath(URL.createObjectURL(selectedFile));
+        // const selectedFile = e.target.files[0];
+      
+        setFile(e.target.files[0]);
+        console.log('console.log',file)
+       
+      
+        // setFilepath(URL.createObjectURL(e.target.files[0]));
     }
+  };
+  const handleClose = () => {
+    setOpen(false);
+    setError(null);
   };
 
   const handleUpload = async () => {    
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('filename', filename);
-    formData.append('filepath', filepath);
-    formData.append('isPublic', isPublic.toString());
+   
+  if(!file){
+    return 
+  }
+      const formData = new FormData();
+      formData.append('myFile', file);
+     formData.append('isPublic', isPublic.toString());
+      console.log("formData",...formData)
+    
 
+    
+   
     try {
+    
         const result = await uploadFile(formData).unwrap();
         console.log("Upload result:", result);
-      } catch (error) {
+      } catch (error:any) {
         console.error("Error uploading file:", error);
+        setError(error.data.message || 'An error occurred during file upload');
+        setOpen(true);
       }
   };
 
@@ -66,7 +84,13 @@ const FileUpload: React.FC = () => {
     <Button variant="contained" color="primary" onClick={handleUpload}>
       Upload
     </Button>
-   
+    {error && (
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+            {error}
+          </Alert>
+        </Snackbar>
+      )}
   </Box>
   );
 };
