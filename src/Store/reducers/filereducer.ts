@@ -1,5 +1,5 @@
-import {createSlice} from "@reduxjs/toolkit";
-import type {PayloadAction} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface File {
   _id: string;
@@ -19,26 +19,18 @@ const initialState: FilesState = {
   loading: false,
   error: null,
 };
-const fileReducer=createSlice({
-    name:'file',
-    initialState,
-    reducers:{
-      fetchFiles:(
-        state,
-        action:PayloadAction<{FilesState:FilesState[]}>
-        )=>{
-            // const { discussions} = action.payload;      
-   
-        },
-   uploadFiles:(
-            state,
-            action:PayloadAction<FilesState[]>
-        )=>{
-     
-
-        },
-    
-    }
-})
-export const { fetchFiles, uploadFiles, } = fileReducer.actions;
+const fileReducer = createSlice({
+  name: "file",
+  initialState,
+  reducers: {
+    fetchFiles: (
+      state,
+      action: PayloadAction<{ FilesState: FilesState[] }>
+    ) => {
+      // const { discussions} = action.payload;
+    },
+    uploadFiles: (state, action: PayloadAction<FilesState[]>) => {},
+  },
+});
+export const { fetchFiles, uploadFiles } = fileReducer.actions;
 export default fileReducer.reducer;

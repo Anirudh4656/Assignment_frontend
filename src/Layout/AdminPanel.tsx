@@ -10,7 +10,6 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <Box
       sx={{
-        backgroundColor: "#bcc4dc",
         display: "flex",
         flexDirection: {
           xs: "column",
@@ -18,19 +17,17 @@ const Layout = ({ children }: LayoutProps) => {
         },
         color: "white",
         padding: 3,
-        gap: 3,
+        gap: 1,
         boxSizing: "border-box",
         overflowY: "hidden",
-        height: "100vh",
+      
       }}
     >
       <Sidebar />
       <Box
         sx={{
           width: "100%",
-          height: "inherit",
-          overflowY: "scroll",
-          border: "2px solid black",
+          height: "inherit"
         }}
       >
         {children}

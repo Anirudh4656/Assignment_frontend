@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 // import theme from "./themes";
-import {createBrowserRouter, RouterProvider} from "react-router-dom"
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Auth from "./Components/Auth/userAuth";
 import Home from "./Pages/Home";
 import Admin from "./Pages/Admin";
@@ -15,40 +15,40 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />
+    element: <Home />,
   },
   {
     path: "/upload",
-    element:( <ProtectedRoute> <Upload /> </ProtectedRoute> )
+    element: (
+      <ProtectedRoute>
+        {" "}
+        <Upload />{" "}
+      </ProtectedRoute>
+    ),
   },
-  
-  
+
   {
     path: "/Plan",
-    element: <PlanForum />
+    element: <PlanForum />,
   },
   {
     path: "/Users",
-    element: <Users/>
+    element: <Users />,
   },
   {
     path: "/Plans",
-    element: <Plans/>
+    element: <Plans />,
   },
   {
-    path:"/auth",
-    element:<Auth />
+    path: "/auth",
+    element: <Auth />,
   },
   {
-    path:'/admin',
-    element: (
-        <Admin />
-    )
-  }
+    path: "/admin",
+    element: <Admin />,
+  },
 ]);
-function App(){
-  return(
-     <RouterProvider router={router} />
-  )
+function App() {
+  return <RouterProvider router={router} />;
 }
 export default App;
