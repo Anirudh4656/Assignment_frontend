@@ -15,6 +15,7 @@ import { AppDispatch } from "../../Store/store";
 import {
   setError,
   setLoading,
+  setTokens,
   setUser,
 } from "../../Store/reducers/authReducers";
 import {
@@ -58,15 +59,21 @@ const UserAuth: React.FC = () => {
         dispatch(setLoading(true));
         const userRegister = await registerUser(form).unwrap();
         if (userRegister) {
+          dispatch(setLoading(true));
+          console.log("user register",userRegister);
           setIsSignUp(false);
           setForm(initialState);
+          //check
           dispatch(setUser(userRegister));
+          dispatch(setTokens({accessToken: userRegister.data.accessToken, refreshToken: userRegister.data.refreshToken }))
         }
       } else {
         dispatch(setLoading(true));
         const userLogin = await loginUser(form).unwrap();
-        localStorage.setItem("token", userLogin.data.accessToken);
+        // localStorage.setItem("token", userLogin.data.accessToken);
         dispatch(setUser(userLogin));
+        dispatch(setTokens({accessToken: userLogin.data.accessToken, refreshToken: userLogin.data.refreshToken }))
+        dispatch(setLoading(false));
         navigate("/");
       }
     } catch (error: any) {

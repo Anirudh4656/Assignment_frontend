@@ -6,12 +6,16 @@ interface User {
   password: string;
 }
 interface AuthState {
+  accessToken: string |null;
+  refreshToken: string;
   user: User | null;
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
 }
 const initialState: AuthState = {
+  accessToken: localStorage.getItem('token'),
+  refreshToken: "",
   user: null,
   loading: false,
   error: null,
@@ -35,10 +39,20 @@ const authSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    setTokens: (
+      state,
+      action: PayloadAction<{ accessToken: string; refreshToken: string }>
+    ) => {
+
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+      state.isAuthenticated = true;
+      localStorage.setItem('token', action.payload.accessToken)
+    },
   },
 });
 
-export const { setUser, setLoading, setError } = authSlice.actions;
+export const { setUser,setTokens, setLoading, setError } = authSlice.actions;
 
 //action creators
 export default authSlice.reducer;

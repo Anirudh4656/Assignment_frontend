@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Box, Hidden, Typography } from "@mui/material";
 import TaskIcon from "@mui/icons-material/Task";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import CreateIcon from "@mui/icons-material/Create";
 import PersonIcon from "@mui/icons-material/Person";

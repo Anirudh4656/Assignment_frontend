@@ -1,8 +1,9 @@
 // src/components/FileList.tsx
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useFilesQuery } from "../../Services/file";
-import { AppDispatch } from "../../Store/store";
+import { AppDispatch, RootState } from "../../Store/store";
+import Pagination  from "./Pagination";
 import {
   Box,
   Card,
@@ -18,6 +19,7 @@ import {
   DialogActions,
   Snackbar,
   Alert,
+  
 } from "@mui/material";
 import PublicIcon from "@mui/icons-material/Public";
 import LockIcon from "@mui/icons-material/Lock";
@@ -25,10 +27,13 @@ import { usePrivateFilesMutation } from "../../Services/file";
 import { useNavigate } from "react-router-dom";
 const FileList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { data: files, error } = useFilesQuery();
+  const currentPage: number = useSelector((state: RootState) => state.file.currentPage);
+  const { data: files, error,refetch } = useFilesQuery(currentPage);
+  console.log("files after pagination",files);
   const [openAccessDialog, setOpenAccessDialog] = React.useState(false);
   const [selectedFile, setSelectedFile] = React.useState<any>(null);
   const [accessKey, setAccessKey] = React.useState("");
+  const [page, setPage] = useState(1);
   const [errors, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [privateFile] = usePrivateFilesMutation();
@@ -51,10 +56,12 @@ const FileList: React.FC = () => {
     setOpen(false);
     setError(null);
   };
-
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    refetch();
+  };
   const handleAccessSubmit = async () => {
-    // Here you would typically handle the access key validation
-    // For demonstration, I'm just closing the dialog
+  
     try {
       const response = await privateFile({
         accessKey,
@@ -71,13 +78,13 @@ const FileList: React.FC = () => {
       setOpenAccessDialog(false);
       console.log("error",error);
       setError(
-        error.data.data.message || "An error occurred during file Download"
+        error.data.message || "An error occurred during file Download"
       );
       console.log("in error", errors);
       console.log(open);
       setOpen(true);
-      if(error.data.message==="API Usage limit exceeded."){
-        navigate('/plan')
+      if(error.data.error_code===404||429 || 404){
+        navigate('/plans')
       }
       console.log(open);
     }
@@ -94,8 +101,9 @@ const FileList: React.FC = () => {
           </Alert>
         </Snackbar>
       )}
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, p: 2 }}>
-        {files?.data.map((file: any) => (
+      <Box sx={{ display: "flex",flexDirection:'column', flexWrap: "wrap", gap: 2, p: 2 }}>
+      <Box sx={{ display: "flex",flexDirection:'row', gap: 2, p: 2 }}>
+        {files?.data?.files.map((file: any) => (
           <Card key={file._id} sx={{ maxWidth: 345, minWidth: 300 }}>
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
@@ -138,6 +146,13 @@ const FileList: React.FC = () => {
             </CardActions>
           </Card>
         ))}
+        </Box >
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <Pagination
+          totalPages={files?.data.NumberOfPages}
+         currentPage={files?.data.currentPage}
+        />
+      </Box>
       </Box>
       {/* Access Key Dialog */}
       <Dialog

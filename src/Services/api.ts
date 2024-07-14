@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { RootState } from '../Store/store';
 interface User {
     data: any;
     accessToken(accessToken: any): unknown;
@@ -9,20 +10,17 @@ interface User {
     isAdmin: boolean;
     blocked: boolean;
   }
-const token= localStorage.getItem('token');
+
 export const userApi= createApi({
     reducerPath:"api",
     baseQuery:fetchBaseQuery(
-        {baseUrl: 'http://localhost:5000/api' }),
+        {baseUrl: 'http://localhost:5000/api'}),
         endpoints:(builder)=>({
             loginUser: builder.mutation<User, { email: string; password: string }>({
                 query: ({ email, password }) => ({
                   url: '/signin',
                   method: 'POST',
-                  body: { email, password },
-                  headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                  body: { email, password }
                 }),
               }),
               registerUser: builder.mutation<User, { username: string; email: string; password: string }>({

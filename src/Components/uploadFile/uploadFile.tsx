@@ -14,7 +14,6 @@ import {
   Alert,
 } from "@mui/material";
 import { RootState, AppDispatch } from "../../Store/store";
-import { uploadFiles, fetchFiles } from "../../Store/reducers/filereducer";
 import { useUploadFileMutation } from "../../Services/file";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -55,6 +54,10 @@ const FileUpload: React.FC = () => {
 
     try {
       const result = await uploadFile(formData).unwrap();
+      if(result){
+        console.log("Upload result:", result);
+        navigate("/");
+      }
       console.log("Upload result:", result);
       navigate("/");
     } catch (error: any) {
@@ -62,6 +65,9 @@ const FileUpload: React.FC = () => {
       
       setError(error.data.message || "An error occurred during file upload");
       setOpen(true);
+      if(error.data.error_code===404 ||429 ){
+        navigate('/plans')
+      }
       // if(error.data.message==="API Usage limit exceeded."){
       //   navigate('/plan')
       // }
