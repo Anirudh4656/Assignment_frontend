@@ -169,10 +169,12 @@ const Plans: React.FC = () => {
     setOpen(false);
   };
 
-  const handleSelectPlan = async (planId: string) => {
+  const handleSelectPlan = async (planId: string,price: number) => {
     setSelectedPlan(planId);
 
-    if (planId) {
+    if (price > 0) {
+       setOpen(true);  }
+    else{
       try {
         const result = await selectedPlans({ planId });
         if (result?.data?.statusCode === 200) {
@@ -202,18 +204,25 @@ const Plans: React.FC = () => {
             </CardContent>
             <CardActions>
               {plan.price > 0 ? (
-              
+                <>
+                  <Button
+                    variant="contained"
+                    color={selectedPlan === plan._id ? "secondary" : "primary"}
+                    onClick={() => handleSelectPlan(plan._id, plan.price)}
+                  >
+                    {selectedPlan === plan._id ? "Selected" : "Select"}
+                  </Button>
                   <CheckoutForm
                     planId={plan._id}
                     open={open}
                     handleClose={handleClose}
                   />
-              
+                </>
               ) : (
                 <Button
                   variant="contained"
                   color={selectedPlan === plan._id ? "secondary" : "primary"}
-                  onClick={() => handleSelectPlan(plan._id)}
+                  onClick={() => handleSelectPlan(plan._id, plan.price)}
                 >
                   {selectedPlan === plan._id ? "Selected" : "Select"}
                 </Button>
