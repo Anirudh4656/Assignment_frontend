@@ -7,11 +7,13 @@ import {
   Typography,
   useTheme,
   Box,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import Input from "./Input";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../Store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../Store/store";
 import {
   setError,
   setLoading,
@@ -34,24 +36,31 @@ const initialState: FormState = { username: "", email: "", password: "" };
 const UserAuth: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
-  // const classes = useStyle(theme);
   const [form, setForm] = useState<FormState>(initialState);
   const [isSignUp, setIsSignUp] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword(!showPassword);
-  //isloading?
-  const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const [registerUser] = useRegisterUserMutation();
   const [loginUser] = useLoginUserMutation();
+  const [errors, setErrors] = useState<string | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
 
+  const handleClose = () => {
+    setOpen(false);
+    setErrors(null);
+  };
+  console.log("error", errors);
   const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [event.target.name]: event.target.value });
+
   const switchMode = () => {
     setForm(initialState);
     setIsSignUp((prevIsSignUp) => !prevIsSignUp);
     setShowPassword(false);
   };
+
   const dispatch = useDispatch<AppDispatch>();
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -60,24 +69,46 @@ const UserAuth: React.FC = () => {
         const userRegister = await registerUser(form).unwrap();
         if (userRegister) {
           dispatch(setLoading(true));
-          console.log("user register",userRegister);
+          console.log("user register", userRegister);
           setIsSignUp(false);
           setForm(initialState);
-          //check
-          dispatch(setUser(userRegister));
-          dispatch(setTokens({accessToken: userRegister.data.accessToken, refreshToken: userRegister.data.refreshToken }))
+          dispatch(
+            setTokens({
+              accessToken: userRegister.data.accessToken,
+              refreshToken: userRegister.data.refreshToken,
+            })
+          );
         }
       } else {
         dispatch(setLoading(true));
-        const userLogin = await loginUser(form).unwrap();
-        console.log("in user login",userLogin.data.user);
-        dispatch(setUser({user:userLogin.data.user}));
-        dispatch(setTokens({accessToken: userLogin.data.accessToken, refreshToken: userLogin.data.refreshToken }))
-        dispatch(setLoading(false));
-        navigate("/");
+        try {
+          const userLogin = await loginUser(form).unwrap();
+
+          console.log("in user login", userLogin.data.user);
+          dispatch(setUser({ user: userLogin.data.user }));
+          dispatch(
+            setTokens({
+              accessToken: userLogin.data.accessToken,
+              refreshToken: userLogin.data.refreshToken,
+            })
+          );
+          dispatch(setLoading(false));
+          navigate("/");
+        } catch (error: any) {
+          setForm(initialState);
+          if (error) {
+            console.log("form", form);
+
+            setErrors(
+              error.data.message || "User is Blocked! Please contact Admin"
+            );
+            setForm(initialState);
+            setOpen(true);
+          }
+        }
       }
-    } catch (error: any) {
-      dispatch(setError(error.toString()));
+    } catch (error) {
+      console.log(error);
     } finally {
       dispatch(setLoading(false));
     }
@@ -85,6 +116,13 @@ const UserAuth: React.FC = () => {
 
   return (
     <Container component="main" maxWidth="xs">
+      {errors && (
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+            {errors}
+          </Alert>
+        </Snackbar>
+      )}
       <Paper
         sx={{
           marginTop: theme.spacing(8),
