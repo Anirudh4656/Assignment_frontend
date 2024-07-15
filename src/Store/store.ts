@@ -5,10 +5,18 @@ import fileReducer from "./reducers/filereducer";
 import adminReducer from "./reducers/adminReducers";
 import { adminApi } from "../Services/adminapi";
 import { fileApi } from "../Services/file";
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 import { useDispatch, useSelector } from "react-redux";
+
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+const persistedReducer = persistReducer(persistConfig, authReducers)
 export const store = configureStore({
   reducer: {
-    auth: authReducers,
+    auth: persistedReducer,
     [userApi.reducerPath]: userApi.reducer,
     file: fileReducer,
     [fileApi.reducerPath]: fileApi.reducer,
@@ -23,6 +31,7 @@ export const store = configureStore({
       adminApi.middleware
     ),
 });
+export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
