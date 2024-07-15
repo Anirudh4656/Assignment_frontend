@@ -74,15 +74,19 @@ const FileList: React.FC = () => {
         setAccessKey("");
         setError("");
       }
-    } catch (error: any) {
+    } catch (error:any) {
       setOpenAccessDialog(false);
       console.log("error", error);
-      setError(error.data.message || "An error occurred during file Download");
+      setError(error.data.data.message  || "An error occurred during file Download");
       console.log("in error", errors);
       console.log(open);
       setOpen(true);
-      if (error.data.error_code === 404 || 429 || 404) {
+      if (error.data.error_code === 404 || error.data.error_code=== 429 ) {
         navigate("/plans");
+      }else if(error.data.error_code===401){
+        
+        setError(error.data.data.message || "An error occurred during file Download");
+        setOpen(true);
       }
       console.log(open);
     }
