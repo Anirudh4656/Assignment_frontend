@@ -33,8 +33,8 @@ export const fileApi = createApi({
 
   endpoints: (builder) => ({
     files: builder.query<FilesState, page>({
-      query: (pageNumber) => ({
-        url: `/users/file?page=${pageNumber}`,
+      query: (currentPage) => ({
+        url: `/users/file?page=${currentPage}`,
         providedtags:['file']
       }),
     }),
