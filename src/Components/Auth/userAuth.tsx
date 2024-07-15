@@ -70,8 +70,8 @@ const UserAuth: React.FC = () => {
       } else {
         dispatch(setLoading(true));
         const userLogin = await loginUser(form).unwrap();
-        // localStorage.setItem("token", userLogin.data.accessToken);
-        dispatch(setUser(userLogin));
+        console.log("in user login",userLogin.data.user);
+        dispatch(setUser({user:userLogin.data.user}));
         dispatch(setTokens({accessToken: userLogin.data.accessToken, refreshToken: userLogin.data.refreshToken }))
         dispatch(setLoading(false));
         navigate("/");
