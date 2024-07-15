@@ -1,6 +1,3 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-// import theme from "./themes";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Auth from "./Components/Auth/userAuth";
 import Home from "./Pages/Home";
@@ -20,10 +17,7 @@ const router = createBrowserRouter([
   {
     path: "/upload",
     element: (
-      <ProtectedRoute>
-        {" "}
-        <Upload />{" "}
-      </ProtectedRoute>
+        <Upload />
     ),
   },
 
@@ -45,7 +39,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <Admin />,
+    element:( <ProtectedRoute>
+      <Admin />,
+    </ProtectedRoute>
+    )
   },
 ]);
 function App() {
