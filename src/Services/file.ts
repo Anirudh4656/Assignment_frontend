@@ -31,11 +31,10 @@ export const fileApi = createApi({
 }
    }),  
 
-  endpoints: (builder) => ({
-    files: builder.query<FilesState, page>({
-      query: (currentPage) => ({
+  endpoints: (builder) => files: builder.query<FilesState, {currentPage: number}>({
+      query: ({currentPage}) => ({
         url: `/users/file?page=${currentPage}`,
-        providedtags:['file']
+        providedtags: ["file"],
       }),
     }),
     privateFiles: builder.mutation<
