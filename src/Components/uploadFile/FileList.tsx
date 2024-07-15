@@ -25,16 +25,14 @@ import { usePrivateFilesMutation } from "../../Services/file";
 import { useNavigate } from "react-router-dom";
 
 const FileList: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
   const currentPage: number = useSelector((state: RootState) => state.file.currentPage);
-  const { data: files, error, refetch } = useFilesQuery(currentPage);
+  const { data: files, error } = useFilesQuery({currentPage});
   console.log("files after pagination", files);
-  const [openAccessDialog, setOpenAccessDialog] = React.useState(false);
+  const [openAccessDialog, setOpenAccessDialog] = React.useState<boolean>(false);
   const [selectedFile, setSelectedFile] = React.useState<any>(null);
   const [accessKey, setAccessKey] = React.useState("");
-  const [page, setPage] = useState(1);
   const [errors, setError] = useState<string | null>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [privateFile] = usePrivateFilesMutation();
   console.log("in data of FileList", privateFile);
   const navigate = useNavigate();
