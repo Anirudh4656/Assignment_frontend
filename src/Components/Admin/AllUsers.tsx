@@ -50,9 +50,6 @@ const AllUsers: React.FC<Props> = ({ a, Toggled }) => {
   const [deleteUser] = useDeleteUserMutation();
   const dispatch = useDispatch<AppDispatch>();
 
-  //backend user authentication if block condition
-  //why state update
-
   const handleToggleUserStatus = async (a: any) => {
     if (a) {
       console.log("in handleToggleStatus", a.id);

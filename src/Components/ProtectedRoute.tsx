@@ -12,8 +12,8 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const result = useSelector((state: RootState) => state.auth.user);
-
-  if (  result?.role !== "ADMIN") {
+console.log(result,"result")
+  if (result?.role !== "ADMIN") {
     return <Navigate to="/" />; 
   }
 

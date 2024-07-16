@@ -209,11 +209,11 @@ const Plans: React.FC = () => {
             borderRadius: 2,
             boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
             width: {
-              xs: '100%', // Full width on extra small screens
-              sm: '80%', // 80% width on small screens
-              md: '60%', // 60% width on medium screens
-              lg: '50%', // 50% width on large screens
-              xl: '40%', // 40% width on extra large screens
+              xs: '100%',
+              sm: '80%', 
+              md: '60%', 
+              lg: '50%', 
+              xl: '40%', 
             }
           }}>
              <CardContent>

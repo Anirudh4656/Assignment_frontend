@@ -6,52 +6,25 @@ import {
   Tooltip,
   IconButton,
 } from "@mui/material";
-import { JwtPayload, jwtDecode } from "jwt-decode";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../Store/store";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import PublicIcon from "@mui/icons-material/Public";
+import { useSelector } from "react-redux";
+import { RootState } from "../Store/store";
 
-
-interface MyToken extends JwtPayload {
-  apiKey: string;
-  id: any;
-  user: string;
-  exp: number;
-  _doc: any;
-  _id: string;
-}
 const Navbar: React.FC = () => {
-  const [user, setUser] = useState<MyToken | null>(null);
-  console.log(`in navbar user ${JSON.stringify(user)}`);
-  const dispatch = useDispatch<AppDispatch>();
+
+const user=useSelector((state:RootState)=>state.auth.user) 
+if(!user){
+  return
+}
+const location = useLocation();
   const navigate = useNavigate();
-  // ??
-  const location = useLocation();
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    console.log(token);
-    if (token) {
-      try {
-        const decodedToken = jwtDecode<MyToken>(token);
-        console.log(`in decode ${JSON.stringify(decodedToken)}`);
-        //check
-        if (decodedToken.exp * 1000 < new Date().getTime()) {
-          logout();
-        } else {
-          setUser(decodedToken);
-        }
-      } catch (error) {
-        console.error("failed todecode", error);
-      }
-    }
-  }, [location]);
+  console.log("user",user);
 
   const logout = () => {
     localStorage.removeItem("token");
-    setUser(null);
     navigate("/auth");
   };
 
@@ -61,16 +34,20 @@ const Navbar: React.FC = () => {
   const homepage = () => {
     navigate("/");
   };
+  const dashboard = (id:string) => {
+    navigate(`/user/${id}`);
+  };
   const copyToClipboard = (text: string) => {
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        console.log("Copied to clipboard:", text);
+        // console.log("Copied to clipboard:", text);
       })
       .catch((err) => {
         console.error("Failed to copy text to clipboard", err);
       });
   };
+  const currentPath = location.pathname;
   return (
     <AppBar
       style={{
@@ -102,21 +79,28 @@ const Navbar: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h6">{user.user}</Typography>
+             <Button
+             color="secondary"
+              onClick={() => dashboard(user?._id || '')}
+              disabled={currentPath === `/user/${user?._id}`}
+            >
+             <Typography variant="h6">{user.username}</Typography>
+            </Button>
+            
             <Tooltip title="public secret">
-                <IconButton onClick={() => copyToClipboard(user.id)}>
+              <IconButton onClick={() => copyToClipboard(user?._id || '')}>
                 <FileCopyIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="api key">
-              <IconButton onClick={() => copyToClipboard(user.apiKey)}>
+              <IconButton onClick={() => copyToClipboard(user?.apiKey || '')}>
                 <PublicIcon />
               </IconButton>
             </Tooltip>
             <Button variant="contained" color="secondary" onClick={logout}>
               Logout
             </Button>
-            <Button variant="contained" color="secondary" onClick={Upload}>
+            <Button variant="contained" color="secondary" onClick={Upload} disabled={currentPath === '/upload'}>
               Upload
             </Button>
           </div>

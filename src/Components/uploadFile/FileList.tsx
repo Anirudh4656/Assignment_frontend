@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useFilesQuery } from "../../Services/file";
-import { AppDispatch, RootState } from "../../Store/store";
+import { RootState } from "../../Store/store";
 import Pagination from "./Pagination";
 import {
   Box,
@@ -26,8 +26,11 @@ import { useNavigate } from "react-router-dom";
 
 const FileList: React.FC = () => {
   const currentPage = useSelector((state: RootState) => state.file.currentPage);
-  const { data: files, error } = useFilesQuery({currentPage:currentPage});
-  const [openAccessDialog, setOpenAccessDialog] = React.useState<boolean>(false);
+  console.log("currentpage", currentPage);
+  const { data: files, error } = useFilesQuery({ currentPage: currentPage });
+  console.log("files after pagination", files);
+  const [openAccessDialog, setOpenAccessDialog] =
+    React.useState<boolean>(false);
   const [selectedFile, setSelectedFile] = React.useState<any>(null);
   const [accessKey, setAccessKey] = React.useState("");
   const [errors, setError] = useState<string | null>(null);
@@ -55,11 +58,6 @@ const FileList: React.FC = () => {
     setError(null);
   };
 
-  const handlePageChange = (event, value) => {
-    setPage(value);
-    refetch();
-  };
-
   const handleAccessSubmit = async () => {
     try {
       const response = await privateFile({
@@ -68,24 +66,27 @@ const FileList: React.FC = () => {
       }).unwrap();
       console.log(response, "access");
       if (response?.statusCode === 200) {
-        console.log("files",selectedFile);
+        console.log("files", selectedFile);
         handleDownload(selectedFile);
         setOpenAccessDialog(false);
         setAccessKey("");
         setError("");
       }
-    } catch (error:any) {
+    } catch (error: any) {
       setOpenAccessDialog(false);
       console.log("error", error);
-      setError(error.data.data.message  || "An error occurred during file Download");
+      setError(
+        error.data.data.message || "An error occurred during file Download"
+      );
       console.log("in error", errors);
       console.log(open);
       setOpen(true);
-      if (error.data.error_code === 404 || error.data.error_code=== 429 ) {
+      if (error.data.error_code === 404 || error.data.error_code === 429) {
         navigate("/plans");
-      }else if(error.data.error_code===401){
-        
-        setError(error.data.data.message || "An error occurred during file Download");
+      } else if (error.data.error_code === 401) {
+        setError(
+          error.data.data.message || "An error occurred during file Download"
+        );
         setOpen(true);
       }
       console.log(open);
@@ -104,8 +105,25 @@ const FileList: React.FC = () => {
           </Alert>
         </Snackbar>
       )}
-      <Box sx={{ display: "flex", flexDirection: "column", flexWrap: "wrap", gap: 2, p: 2 }}>
-        <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 2, p: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          flexWrap: "wrap",
+          gap: 2,
+          p: 2,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 2,
+            p: 2,
+          }}
+        >
           {files?.data?.files.map((file: any) => (
             <Card key={file._id} sx={{ maxWidth: 345, minWidth: 300 }}>
               <CardContent>
@@ -124,14 +142,22 @@ const FileList: React.FC = () => {
               </CardContent>
               <CardActions>
                 {file.isPublic ? (
-                  <Button size="small" color="primary" onClick={() => handleDownload(file)}>
+                  <Button
+                    size="small"
+                    color="primary"
+                    onClick={() => handleDownload(file)}
+                  >
                     View/Download
                   </Button>
                 ) : (
-                  <Button size="small" color="primary" onClick={() => {
-                    setSelectedFile(file);
-                    setOpenAccessDialog(true);
-                  }}>
+                  <Button
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      setSelectedFile(file);
+                      setOpenAccessDialog(true);
+                    }}
+                  >
                     Enter Access Key
                   </Button>
                 )}
@@ -142,14 +168,17 @@ const FileList: React.FC = () => {
             </Card>
           ))}
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
           <Pagination
             totalPages={files?.data.NumberOfPages}
             currentPage={files?.data.currentPage}
           />
         </Box>
       </Box>
-      <Dialog open={openAccessDialog} onClose={() => setOpenAccessDialog(false)}>
+      <Dialog
+        open={openAccessDialog}
+        onClose={() => setOpenAccessDialog(false)}
+      >
         <DialogTitle>Enter Access Key</DialogTitle>
         <DialogContent>
           <TextField

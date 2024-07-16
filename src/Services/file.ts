@@ -12,26 +12,28 @@ interface FilesState {
   files: File[];
   loading: boolean;
   error: string | null;
+  statusCode?: number;
+  data?: any;
 }
-interface page{
-pageNumber:number;
-}
+
 // const token = localStorage.getItem("token");
 export const fileApi = createApi({
   reducerPath: "fileApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:5000/api",
     prepareHeaders: (headers, { getState }) => {
-  const token = (getState() as RootState).auth.accessToken;
-  console.log("token error",token); // Assuming you have an auth slice with a token in your Redux statee
-  if (token) {
-    console.log("token",token);
-    headers.set('Authorization', `Bearer ${token}`);
-  }
-  return headers;
-}
-   }),  
+      const token = (getState() as RootState).auth.accessToken;
+      console.log("token error", token); // Assuming you have an auth slice with a token in your Redux statee
+      if (token) {
+        console.log("token", token);
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
 
-  endpoints: (builder) => files: builder.query<FilesState, {currentPage: number}>({
+  endpoints: (builder) => ({
+    files: builder.query<FilesState, {currentPage: number}>({
       query: ({currentPage}) => ({
         url: `/users/file?page=${currentPage}`,
         providedtags: ["file"],
@@ -44,20 +46,23 @@ export const fileApi = createApi({
       query: ({ accessKey, id }) => ({
         url: "/users/keys",
         body: { accessKey, id },
-        method: "POST"
+        method: "POST",
       }),
     }),
     selectedPlans: builder.mutation<FilesState, { planId: string }>({
       query: ({ planId }) => ({
         url: `/users/plans/${planId}`,
-        method: "POST"
+        method: "POST",
       }),
     }),
-    checkoutPlans: builder.mutation<FilesState, { paymentMethodId:string,planId:string }>({
-      query: ({paymentMethodId,planId}) => ({
-        url: '/users/create-payment-intent',
+    checkoutPlans: builder.mutation<
+      FilesState,
+      { paymentMethodId: string; planId: string }
+    >({
+      query: ({ paymentMethodId, planId }) => ({
+        url: "/users/create-payment-intent",
         method: "POST",
-        body:{paymentMethodId,planId}
+        body: { paymentMethodId, planId },
       }),
     }),
 
@@ -65,8 +70,8 @@ export const fileApi = createApi({
       query: (FormData) => ({
         url: "/users/uploadfile",
         method: "POST",
-        body:FormData,
-        invalidateTags:['file']
+        body: FormData,
+        invalidateTags: ["file"],
       }),
     }),
   }),
@@ -77,9 +82,6 @@ export const {
   useUploadFileMutation,
   useSelectedPlansMutation,
   usePrivateFilesMutation,
-  useCheckoutPlansMutation
+  useCheckoutPlansMutation,
 } = fileApi;
-// async onQueryStarted(arg, { dispatch, getState }) {
-//     await refreshTokenIfNeeded(dispatch, getState);
-// },
-// localStorage.setItem('profile', JSON.stringify({ ...action?.data }));
+

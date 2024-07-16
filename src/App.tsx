@@ -7,6 +7,7 @@ import Users from "./Components/Admin/index";
 import Plans from "./Pages/Plans";
 import Upload from "./Components/uploadFile/uploadFile";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import Dashboard from "./Pages/userDashBoard";
 
 // Define the router configuration
 const router = createBrowserRouter([
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: "/auth",
     element: <Auth />,
+  },
+  {
+    path: "/user/:id",
+    element: <Dashboard/>,
   },
   {
     path: "/admin",

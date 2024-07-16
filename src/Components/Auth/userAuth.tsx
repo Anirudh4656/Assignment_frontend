@@ -12,10 +12,9 @@ import {
 } from "@mui/material";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import Input from "./Input";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../Store/store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../Store/store";
 import {
-  setError,
   setLoading,
   setTokens,
   setUser,
@@ -68,18 +67,19 @@ const UserAuth: React.FC = () => {
         dispatch(setLoading(true));
         const userRegister = await registerUser(form).unwrap();
         if (userRegister) {
+          console.log("userRegistration", userRegister);
           dispatch(setLoading(true));
-          setIsSignUp(false);
-          setForm(initialState);
+          console.log("user register", userRegister);
           dispatch(
             setTokens({
               accessToken: userRegister.data.accessToken,
               refreshToken: userRegister.data.refreshToken,
             })
           );
-             dispatch(setUser({ user: userRegister.data.user}));
-          setIsSignUp(false)
-          navigate("/");
+          dispatch(setUser({ user: userRegister.data.user }));
+          setIsSignUp(false);
+          setForm(initialState);
+          // navigate("/");
         }
       } else {
         dispatch(setLoading(true));
