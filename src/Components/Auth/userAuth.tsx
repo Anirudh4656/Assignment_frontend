@@ -69,7 +69,6 @@ const UserAuth: React.FC = () => {
         const userRegister = await registerUser(form).unwrap();
         if (userRegister) {
           dispatch(setLoading(true));
-          console.log("user register", userRegister);
           setIsSignUp(false);
           setForm(initialState);
           dispatch(
@@ -78,6 +77,9 @@ const UserAuth: React.FC = () => {
               refreshToken: userRegister.data.refreshToken,
             })
           );
+             dispatch(setUser({ user: userRegister.data.user}));
+          setIsSignUp(false)
+          navigate("/");
         }
       } else {
         dispatch(setLoading(true));
