@@ -19,10 +19,9 @@ import LockIcon from "@mui/icons-material/Lock";
 import { usePrivateFilesMutation } from "../../Services/file";
 import { useNavigate } from "react-router-dom";
 
-
 const FileList: React.FC = () => {
   const currentPage = useSelector((state: RootState) => state.file.currentPage);
- 
+
   console.log("currentpage", currentPage);
   const { data: files, error } = useFilesQuery({ currentPage: currentPage });
   console.log("files after pagination", files);
@@ -35,7 +34,7 @@ const FileList: React.FC = () => {
   const [privateFile] = usePrivateFilesMutation();
   console.log("in data of FileList", privateFile);
   const navigate = useNavigate();
- 
+
   useEffect(() => {
     if (error) {
       setError("Error: Too many requests");
@@ -43,11 +42,12 @@ const FileList: React.FC = () => {
     }
   }, [error]);
 
-  const handleDownload = async(file: any)=> {
-
-   
+  const handleDownload = async (file: any) => {
     if (file) {
-      window.open(`http://localhost:${5000}/api/users/file/download/${file._id}`, "_blank");
+      window.open(
+        `http://localhost:${5000}/api/users/file/download/${file._id}`,
+        "_blank"
+      );
     }
   };
 
@@ -78,7 +78,7 @@ const FileList: React.FC = () => {
       console.log("in error", errors);
       console.log(open);
       setOpen(true);
-      if (error.data.error_code === 404 || error.data.error_code === 429) {
+      if (error.data.error_code === 404 || error.data.error_code === 424) {
         navigate("/plans");
       } else if (error.data.error_code === 401) {
         setError(
@@ -172,7 +172,6 @@ const FileList: React.FC = () => {
           />
         </Box>
       </Box>
-     
     </Box>
   );
 };
