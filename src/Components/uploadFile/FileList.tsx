@@ -61,7 +61,6 @@ const FileList: React.FC = () => {
   const handleAccessSubmit = async () => {
     try {
       const response = await privateFile({
-        accessKey,
         id: selectedFile._id,
       }).unwrap();
       console.log(response, "access");
@@ -155,7 +154,7 @@ const FileList: React.FC = () => {
                     color="primary"
                     onClick={() => {
                       setSelectedFile(file);
-                      setOpenAccessDialog(true);
+                      handleAccessSubmit();
                     }}
                   >
                     Enter Access Key
@@ -175,32 +174,7 @@ const FileList: React.FC = () => {
           />
         </Box>
       </Box>
-      <Dialog
-        open={openAccessDialog}
-        onClose={() => setOpenAccessDialog(false)}
-      >
-        <DialogTitle>Enter Access Key</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="accessKey"
-            label="Access Key"
-            type="password"
-            fullWidth
-            value={accessKey}
-            onChange={(e) => setAccessKey(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenAccessDialog(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleAccessSubmit} color="primary">
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
+     
     </Box>
   );
 };

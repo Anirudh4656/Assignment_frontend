@@ -6,9 +6,10 @@ import { Container, Grid } from "@mui/material";
 const Home: React.FC = () => {
   return (
     <>
-      <NavBar />
+       <NavBar />
       <Container maxWidth="xl">
         <FileList />
+      
       </Container>
     </>
   );

@@ -16,9 +16,9 @@ import { RootState } from "../Store/store";
 const Navbar: React.FC = () => {
 
 const user=useSelector((state:RootState)=>state.auth.user) 
-if(!user){
-  return
-}
+// if(!user){
+//   return
+// }
 const location = useLocation();
   const navigate = useNavigate();
   console.log("user",user);

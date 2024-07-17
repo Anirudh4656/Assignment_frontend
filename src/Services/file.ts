@@ -40,12 +40,10 @@ export const fileApi = createApi({
       }),
     }),
     privateFiles: builder.mutation<
-      FilesState,
-      { accessKey: string; id: string }
+      FilesState,{ id: string }
     >({
-      query: ({ accessKey, id }) => ({
-        url: "/users/keys",
-        body: { accessKey, id },
+      query: ({  id }) => ({
+        url: `/users/keys/${id}`,
         method: "POST",
       }),
     }),
