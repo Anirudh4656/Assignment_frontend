@@ -59,10 +59,13 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       localStorage.setItem('token', action.payload.accessToken)
     },
+    clearAccessToken(state) {
+      state.accessToken = null;
+    },
   },
 });
 
-export const { setUser,setTokens, setLoading, setError } = authSlice.actions;
+export const { setUser,setTokens, setLoading, setError, clearAccessToken } = authSlice.actions;
 
 //action creators
 export default authSlice.reducer;

@@ -16,7 +16,6 @@ interface FilesState {
   data?: any;
 }
 
-// const token = localStorage.getItem("token");
 export const fileApi = createApi({
   reducerPath: "fileApi",
   baseQuery: fetchBaseQuery({
@@ -46,6 +45,16 @@ export const fileApi = createApi({
         url: `/users/keys/${id}`,
         method: "POST",
       }),
+    }),
+    
+    downloadFiles: builder.query<FilesState, { id: string }>({
+      query: ({ id }) => ({
+        url: `/users/file/download/${id}`,
+
+      }),
+    }),
+    csvExport: builder.query<void, string>({ // Adjust response type if necessary
+      query: (id) =>`/users/file/download/${id}`, // Endpoint path with id parameter
     }),
     selectedPlans: builder.mutation<FilesState, { planId: string }>({
       query: ({ planId }) => ({
@@ -78,8 +87,10 @@ export const fileApi = createApi({
 export const {
   useFilesQuery,
   useUploadFileMutation,
+  useDownloadFilesQuery,
   useSelectedPlansMutation,
   usePrivateFilesMutation,
+  useLazyCsvExportQuery,
   useCheckoutPlansMutation,
 } = fileApi;
 

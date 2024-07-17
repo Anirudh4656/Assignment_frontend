@@ -11,11 +11,6 @@ import {
   Button,
   Typography,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
   Snackbar,
   Alert,
 } from "@mui/material";
@@ -24,8 +19,10 @@ import LockIcon from "@mui/icons-material/Lock";
 import { usePrivateFilesMutation } from "../../Services/file";
 import { useNavigate } from "react-router-dom";
 
+
 const FileList: React.FC = () => {
   const currentPage = useSelector((state: RootState) => state.file.currentPage);
+ 
   console.log("currentpage", currentPage);
   const { data: files, error } = useFilesQuery({ currentPage: currentPage });
   console.log("files after pagination", files);
@@ -38,7 +35,7 @@ const FileList: React.FC = () => {
   const [privateFile] = usePrivateFilesMutation();
   console.log("in data of FileList", privateFile);
   const navigate = useNavigate();
-
+ 
   useEffect(() => {
     if (error) {
       setError("Error: Too many requests");
@@ -46,10 +43,11 @@ const FileList: React.FC = () => {
     }
   }, [error]);
 
-  const handleDownload = (file: any) => {
-    console.log("in file", file);
+  const handleDownload = async(file: any)=> {
+
+   
     if (file) {
-      window.open(`http://localhost:${5000}/file/${file._id}`, "_blank");
+      window.open(`http://localhost:${5000}/api/users/file/download/${file._id}`, "_blank");
     }
   };
 

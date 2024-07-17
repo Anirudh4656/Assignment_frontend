@@ -18,6 +18,7 @@ import {
   setLoading,
   setTokens,
   setUser,
+  clearAccessToken
 } from "../../Store/reducers/authReducers";
 import {
   useLoginUserMutation,
